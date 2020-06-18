@@ -11,11 +11,17 @@
 #include <signal.h>
 
 int connfd = 0;
+int listenfd = 0;
 int reinit = 0;
 void intHandler(int signal) {
-    printf("System exiting: signal %d\n", signal);
+    printf("intHanlder(): signal %d\n", signal);
+    close(listenfd);
     close(connfd);
-    reinit = 1;
+    
+    if(signal == 13) {
+        reinit = 1;
+    }
+    
     if(signal == 2) {
         exit(signal);
     }
@@ -26,7 +32,8 @@ int main(int argc, char *argv[]) {
     signal(SIGINT, intHandler);
     signal(SIGPIPE, intHandler);
 
-    int listenfd = 0;
+    int yes=1;        // For setsockopt() SO_REUSEADDR, below
+    
     struct sockaddr_in serv_addr;
 
     char sendBuff[1025];
@@ -40,22 +47,48 @@ int main(int argc, char *argv[]) {
     serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
     serv_addr.sin_port = htons(5000);
 
+    // Lose the pesky "address already in use" error message - ref: beej's guide
+    setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
+        
     bind(listenfd, (struct sockaddr*) &serv_addr, sizeof (serv_addr));
 
     listen(listenfd, 10);
+    printf("listening on socket\n");
+    
     connfd = accept(listenfd, (struct sockaddr*) NULL, NULL);
+    printf("connection accepted\n");
     int ret;
     while (1) {
         if(reinit == 1) {
-            bind(listenfd, (struct sockaddr*) &serv_addr, sizeof (serv_addr));
-            listen(listenfd, 10);
-            connfd = accept(listenfd, (struct sockaddr*) NULL, NULL);
+                reinit = 0;
+                printf("listening on socket\n");
+
+                listenfd = socket(AF_INET, SOCK_STREAM, 0);
+                memset(&serv_addr, '0', sizeof (serv_addr));
+                memset(sendBuff, '0', sizeof (sendBuff));
+
+                serv_addr.sin_family = AF_INET;
+                serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+                serv_addr.sin_port = htons(5000);
+
+                // Lose the pesky "address already in use" error message - ref: beej's guide
+                setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
+
+                bind(listenfd, (struct sockaddr*) &serv_addr, sizeof (serv_addr));
+                listen(listenfd, 10);
+                connfd = accept(listenfd, (struct sockaddr*) NULL, NULL);
         }
+        
         ticks = time(NULL);
         snprintf(sendBuff, sizeof (sendBuff), "%.24s\r\n", ctime(&ticks));
-        ret = write(connfd, sendBuff, strlen(sendBuff));
-        if (ret = !0) {
-            printf("write error - error no: %d\n", ret);
+        int buff_len = strlen(sendBuff);
+        printf("buffer length: %d\n", buff_len);
+        ret = write(connfd, sendBuff, buff_len);
+        if (ret < 0) {
+            printf("Write Error - code: %d\n", ret);
+        }
+        else {
+            printf("Write Fun - Return code: %d\n", ret);
         }
         sleep(1);
     }
