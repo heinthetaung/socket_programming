@@ -54,6 +54,7 @@ int main(int argc, char *argv[])
         }
     } 
 
+    printf("Received: %s\n", recvBuff);
     if(n < 0)
     {
         printf("\n Read error \n");

@@ -11,15 +11,20 @@
 #include <signal.h>
 
 int connfd = 0;
-
+int reinit = 0;
 void intHandler(int signal) {
     printf("System exiting: signal %d\n", signal);
     close(connfd);
-    exit(signal);
+    reinit = 1;
+    if(signal == 2) {
+        exit(signal);
+    }
+    
 }
 
 int main(int argc, char *argv[]) {
     signal(SIGINT, intHandler);
+    signal(SIGPIPE, intHandler);
 
     int listenfd = 0;
     struct sockaddr_in serv_addr;
@@ -41,6 +46,11 @@ int main(int argc, char *argv[]) {
     connfd = accept(listenfd, (struct sockaddr*) NULL, NULL);
     int ret;
     while (1) {
+        if(reinit == 1) {
+            bind(listenfd, (struct sockaddr*) &serv_addr, sizeof (serv_addr));
+            listen(listenfd, 10);
+            connfd = accept(listenfd, (struct sockaddr*) NULL, NULL);
+        }
         ticks = time(NULL);
         snprintf(sendBuff, sizeof (sendBuff), "%.24s\r\n", ctime(&ticks));
         ret = write(connfd, sendBuff, strlen(sendBuff));
