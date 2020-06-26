@@ -40,7 +40,7 @@ void socket_listen(void) {
 
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    serv_addr.sin_port = htons(5000);
+    serv_addr.sin_port = htons(35001);
 
     // Lose the pesky "address already in use" error message - ref: beej's guide
     setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof (int));
