@@ -1,8 +1,8 @@
 CC=gcc
-CFLAGS=-I.
+CFLAGS=-I. -lrt -pthread
 DEPS =
-SERVER_OBJ = server.o
-CLIENT_OBJ = client.o
+SERVER_OBJ = server.o slog.o
+CLIENT_OBJ = client.o slog.o socket_send.o cJSON.o
 
 all: client server
 	

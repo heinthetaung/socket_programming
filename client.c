@@ -9,71 +9,57 @@
 #include <errno.h>
 #include <arpa/inet.h> 
 #include <signal.h>
+#include "socket.h"
 
-int sockfd = 0;
-int reinit = 0;
-char server_ip[] = "0.0.0.0";
 char recvBuff[1024];
 
-void intHandler(int signal) {
-    printf("intHanlder(): signal %d\n", signal);
-    close(sockfd);
-    if (signal == 13) {
-        reinit = 1;
+void signal_handler(int signal) {
+    socket_signalHandler(signal);
+    if (signal == SIGQUIT) {
+        //quit_sig = 1;
+        printf("\n Got Quit Signal\n");
+    } else if ((signal == SIGINT) || (signal == SIGTERM)) {
+        //exit_sig = 1;
+        printf("\n Got Exit Signal\n");
+        exit(0);
     }
 
-    if (signal == 2) {
-        exit(signal);
-    }
-
+    //pclose(fp);
 }
 
-void socket_connect(void) {
-    int ret = 0;
-    struct sockaddr_in serv_addr;
-    if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        printf("\n Error : Could not create socket \n");
-        exit(EXIT_FAILURE);
-    }
+void send_event(char *tag_id, char cmd, char * image) {
+    char data[512] = {0};
+    char event_time[512] = {0};
+    char jsonString[512] = {0};
 
-    memset(&serv_addr, '0', sizeof (serv_addr));
+    get_formatted_time(event_time);
+    int json_len = snprintf(jsonString, sizeof (jsonString), "%s", build_json(tag_id, event_time, image));
+    int buff_len = prepare_data(data, cmd, jsonString, json_len);
 
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(5000);
-
-    if (inet_pton(AF_INET, server_ip, &serv_addr.sin_addr) <= 0) {
-        printf("\n inet_pton error occured\n");
-        exit(EXIT_FAILURE);
-    }
-
-    if (ret = connect(sockfd, (struct sockaddr *) &serv_addr, sizeof (serv_addr)) < 0) {
-        printf("Error : Connect Failed, Error code: %d\n", ret);
-    }
+    socket_send_data(data, buff_len);
 }
 
+#define cmd_len 2
+#define cmd 254
 int main(int argc, char *argv[]) {
-    signal(SIGINT, intHandler);
-    signal(SIGPIPE, intHandler);
+    signal(SIGINT, signal_handler);
+    signal(SIGPIPE, signal_handler);
     int n = 0;
+    int ret;
+    char data[7] = {0};
+    data[0] = (char) 0x01;
+    data[1] = 2;
+    data[2] = 0;
+    data[3] = 0;
+    data[4] = 0;
+    data[5] = cmd;
+    data[6] = 0;
+    int buff_len = 7;
 
-    socket_connect();
-
-    while (1) {
-        while ((n = read(sockfd, recvBuff, sizeof (recvBuff) - 1)) > 0) {
-            recvBuff[n] = 0;
-            //printf("n: %d\n", n);
-            if (fputs(recvBuff, stdout) == EOF) {
-                printf("\n Error : Fputs error\n");
-            }
-        }
-        close(sockfd);
-        socket_connect();
-        printf("Read error - code: %d\n", n);
-        sleep(1);
-    }
-    if (n < 0) {
-        printf("\n Read error \n");
-    }
+    
+    send_event("0001", ID_2FA_SUCCESS, NULL);
 
     return 0;
+
 }
+
