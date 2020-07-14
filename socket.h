@@ -18,6 +18,13 @@
 extern "C" {
 #endif
 
+#define SERVER_IP "192.168.1.134"
+    //    #define SERVER_IP  "0.0.0.0"
+    //    #define SERVER_IP "10.0.105.10"
+    //#define SERVER_IP  "10.0.0.37"
+
+#define SERVER_PORT 35001
+
 #define ID_STARTUP 1
 #define ID_DOOR_OPEN 10
 #define ID_DOOR_CLOSE 11
@@ -38,6 +45,8 @@ extern "C" {
 #define ID_ACCESS_ERR 253
 #define ID_HEART_BEAT 254
 
+#define ID_TAG_ENROLL 222
+
 #define data_offset 5
 #define cmd_len 2
 
@@ -48,7 +57,7 @@ extern "C" {
     void get_formatted_time(char * time_tmp);
     void socket_connect(void);
     void send_heartbeat_event(char cmd);
-
+void socket_sendDataFromServer(char * data, int buff_len);
 #ifdef __cplusplus
 }
 #endif

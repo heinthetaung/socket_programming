@@ -10,6 +10,7 @@
 #include <time.h>
 #include <signal.h>
 #include "slog.h"
+#include "cJSON.h"
 
 #define JSON_SIZE 10000000
 
@@ -121,9 +122,9 @@ int main(int argc, char *argv[]) {
             memcpy((char*) dataPtr, ((char*) recvBuffPtr) + data_offset, (JSON_SIZE * sizeof (char)) - data_offset);
             char * tmp = (char*) malloc(JSON_SIZE * sizeof (char));
             int tmp_len = snprintf(tmp, JSON_SIZE * sizeof (char), "%s\n", (char*) data);
-                        printf("Compare Length: %d\n", tmp_len-1+7);
-            printf("%s\n", data);
-            fflush(stdout);
+            printf("Compare Length: %d\n", tmp_len - 1 + 7);
+            //            printf("%s\n", data);
+            //            fflush(stdout);
             //                                            int i=7;
             //                                            while(data_length) {
             //                                                
@@ -139,7 +140,19 @@ int main(int argc, char *argv[]) {
         close(listenfd);
         close(connfd);
         reinit = 1;
-        
-//        exit(EXIT_SUCCESS);
+
+        cJSON * json = cJSON_Parse(data);
+        cJSON * tagID = NULL;
+                char *string = cJSON_PrintUnformatted(json);
+                printf("%s\n", string);
+        tagID = cJSON_GetObjectItemCaseSensitive(json, "TAGID");
+//        if (cJSON_IsString(tagID) && (tagID->valuestring != NULL)) {
+//            printf("Beacon ID: %s\n", tagID->valuestring);
+//        } else {
+//            printf("No TAG ID");
+//        }
+
+        fflush(stdout);
+        //        exit(EXIT_SUCCESS);
     }
 }

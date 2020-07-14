@@ -22,12 +22,8 @@
 
 int sockfd = 0;
 int reinit = 0;
-//char server_ip[] = "192.168.1.148";
-char server_ip[] = "0.0.0.0";
-//char server_ip[] = "10.0.105.10";
-//char server_ip[] = "10.0.0.37";
-//char server_ip[] = "10.242.2.2";
-int server_port = 35001;
+char server_ip[] = SERVER_IP;
+int server_port = SERVER_PORT;
 char recvBuff[1024];
 char sendBuff[1024];
 pthread_mutex_t socket_lock; 
@@ -124,6 +120,19 @@ void socket_send_data(char * data, int buff_len) {
         printf("Write Error - code: %d\n", ret);
     }
     close(sockfd);
+//    pthread_mutex_unlock(&socket_lock); 
+    sleep(1);
+}
+
+void socket_sendDataFromServer(char * data, int buff_len) {
+    int ret = 0;
+//    pthread_mutex_lock(&socket_lock); 
+//    socket_connect();
+    ret = write(sockfd, data, buff_len);
+    if (ret < 0) {
+        printf("Write Error - code: %d\n", ret);
+    }
+//    close(sockfd);
 //    pthread_mutex_unlock(&socket_lock); 
     sleep(1);
 }
