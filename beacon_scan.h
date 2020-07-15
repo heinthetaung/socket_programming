@@ -21,6 +21,8 @@ extern "C" {
     //code here
 #include <unistd.h> //sleep func
 
+    #define RSSI_THRESHOLD -60
+
     int beacon_filter(char * beacon_data);
     int beacon_get_rssi(char *beacon_data);
     pid_t proc_find(const char* name);

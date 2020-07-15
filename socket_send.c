@@ -26,7 +26,7 @@ char server_ip[] = SERVER_IP;
 int server_port = SERVER_PORT;
 char recvBuff[1024];
 char sendBuff[1024];
-pthread_mutex_t socket_lock; 
+pthread_mutex_t socket_lock;
 
 void socket_signalHandler(int signal) {
     close(sockfd);
@@ -53,6 +53,21 @@ char * build_json(char * tag_id, char * event_time, char * image) {
     }
     return cJSON_PrintUnformatted(object);
 
+}
+
+char * build_beaconJSON(char * tag_id, char * bat_status) {
+    cJSON *object = cJSON_CreateObject();
+
+    if (tag_id != NULL) {
+        cJSON_AddStringToObject(object, "TAGID", tag_id);
+    } else {
+        cJSON_AddStringToObject(object, "TAGID", "");
+    }
+
+    if (bat_status != NULL) {
+        cJSON_AddStringToObject(object, "BAT", bat_status);
+    }
+    return cJSON_PrintUnformatted(object);
 }
 
 void get_formatted_time(char * time_tmp) {
@@ -113,27 +128,27 @@ void send_heartbeat_event(char cmd) {
 
 void socket_send_data(char * data, int buff_len) {
     int ret = 0;
-//    pthread_mutex_lock(&socket_lock); 
+    //    pthread_mutex_lock(&socket_lock); 
     socket_connect();
     ret = write(sockfd, data, buff_len);
     if (ret < 0) {
         printf("Write Error - code: %d\n", ret);
     }
     close(sockfd);
-//    pthread_mutex_unlock(&socket_lock); 
+    //    pthread_mutex_unlock(&socket_lock); 
     sleep(1);
 }
 
 void socket_sendDataFromServer(char * data, int buff_len) {
     int ret = 0;
-//    pthread_mutex_lock(&socket_lock); 
-//    socket_connect();
+    //    pthread_mutex_lock(&socket_lock); 
+    //    socket_connect();
     ret = write(sockfd, data, buff_len);
     if (ret < 0) {
         printf("Write Error - code: %d\n", ret);
     }
-//    close(sockfd);
-//    pthread_mutex_unlock(&socket_lock); 
+    //    close(sockfd);
+    //    pthread_mutex_unlock(&socket_lock); 
     sleep(1);
 }
 

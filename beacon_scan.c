@@ -19,7 +19,6 @@
 #include <signal.h> //opendir func
 #include "beacon_scan.h"
 
-#define RSSI_THRESHOLD -80
 int beacon_detected;
 /*
  * 
@@ -117,6 +116,7 @@ void* beacon_detect_task(void* argv) {
     FILE *fp;
     pid_t hcitool_process_id = proc_find("hcitool");
     if (hcitool_process_id == -1) {
+//        system("sudo systemctl restart bluetooth");
         int status = system("sudo hcitool lescan --duplicates > /dev/null &");
         if (status != 0) {
             printf("cannot start hcitool error\n");
