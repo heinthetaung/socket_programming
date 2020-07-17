@@ -47,7 +47,7 @@ void socket_listen(void) {
 
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    serv_addr.sin_port = htons(35001);
+    serv_addr.sin_port = htons(35002);
 
     // Lose the pesky "address already in use" error message - ref: beej's guide
     setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof (int));
@@ -140,19 +140,21 @@ int main(int argc, char *argv[]) {
         close(listenfd);
         close(connfd);
         reinit = 1;
+        if (data_length > 7) {
+            cJSON * json = cJSON_Parse(data);
+            cJSON * tagID = NULL;
+            char *string = cJSON_PrintUnformatted(json);
+            printf("%s\n", string);
+            tagID = cJSON_GetObjectItemCaseSensitive(json, "TAGID");
+            //        if (cJSON_IsString(tagID) && (tagID->valuestring != NULL)) {
+            //            printf("Beacon ID: %s\n", tagID->valuestring);
+            //        } else {
+            //            printf("No TAG ID");
+            //        }
 
-        cJSON * json = cJSON_Parse(data);
-        cJSON * tagID = NULL;
-                char *string = cJSON_PrintUnformatted(json);
-                printf("%s\n", string);
-        tagID = cJSON_GetObjectItemCaseSensitive(json, "TAGID");
-//        if (cJSON_IsString(tagID) && (tagID->valuestring != NULL)) {
-//            printf("Beacon ID: %s\n", tagID->valuestring);
-//        } else {
-//            printf("No TAG ID");
-//        }
+            fflush(stdout);
+        }
 
-        fflush(stdout);
         //        exit(EXIT_SUCCESS);
     }
 }

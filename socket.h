@@ -23,7 +23,7 @@ extern "C" {
     //    #define SERVER_IP "10.0.105.10"
     //#define SERVER_IP  "10.0.0.37"
 
-#define SERVER_PORT 35001
+#define SERVER_PORT 35002
 
 #define ID_STARTUP 1
 #define ID_DOOR_OPEN 10
