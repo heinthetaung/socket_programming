@@ -54,7 +54,6 @@ void socket_signalHandler(int signal) {
         shutdown(listenfd, 2);
         close(connfd);
         close(listenfd);
-        free(recvBuff);
     }
 }
 
@@ -296,15 +295,46 @@ void * socket_server_task(void* arg) {
             printf("if (recvBuff[0] != 0x01)\n");
         }
 
-//        close(listenfd);
-//        close(connfd);
+        //        close(listenfd);
+        //        close(connfd);
         reinit_listen = 1;
         if (data_length > 7) {
             cJSON * json = cJSON_Parse(data);
             cJSON * tagID = NULL;
+            cJSON * scheduleID = NULL;
+            cJSON * whitelistID = NULL;
             char *string = cJSON_PrintUnformatted(json);
-            
-            printf("%s\n", string);
+//            db_insert_json(string, NULL);
+//            printf("%s\n", string);
+            switch (cmd_id) {
+                case ID_CONTROLLER_RESYNC:
+                    break;
+                case ID_CONTROLLER_SEND_STATUS:
+                    break;
+                case ID_ADD_WHITELIST:
+                    save_whitelist(string);
+                    break;
+                case ID_ADD_BLACKLIST:
+                    whitelistID = cJSON_GetObjectItemCaseSensitive(json, "ID");
+                    delete_whitelist(whitelistID ->valuestring);
+                    break;
+                case ID_ERASE_WHITELIST:
+                    break;
+                case ID_ADD_SCHEDULE:
+                    save_schedule(string);
+                    break;
+                case ID_REMOVE_SCHEDULE:
+                    scheduleID = cJSON_GetObjectItemCaseSensitive(json, "ID");
+                    delete_schedule(scheduleID->valuestring);
+                    break;
+                case ID_FIRMWARE_UPDATE:
+                    break;
+                case ID_RESTART_CONTROLLER:
+                    break;
+                default:
+                    printf("Invalid command ID\n");
+                    break;
+            }
             tagID = cJSON_GetObjectItemCaseSensitive(json, "TAGID");
             //        if (cJSON_IsString(tagID) && (tagID->valuestring != NULL)) {
             //            printf("Beacon ID: %s\n", tagID->valuestring);
@@ -312,7 +342,10 @@ void * socket_server_task(void* arg) {
             //            printf("No TAG ID");
             //        }
 
-//            fflush(stdout);
+            //            fflush(stdout);
+            cJSON_free(scheduleID);
+            cJSON_free(tagID);
+            cJSON_free(json);
         }
         //        exit(EXIT_SUCCESS);
     }

@@ -18,7 +18,20 @@
 extern "C" {
 #endif
 
-int db_insert_json(char * json);
+#define DB_NAME "mydb"
+#define COLL_NAME "mycoll"
+
+    int db_insert_json(char * json, char * description);
+    int db_delete_json(char * id);
+    int db_query_json(char * key, char * val, char * result[], int * size);
+
+    int save_schedule(char *json);
+    int delete_schedule(char *id);
+    int get_schedule(char * result[], int *size);
+
+    int save_whitelist(char * json);
+    int delete_whitelist(char *id);
+    int get_pin_from_whitelist(char * tagid, char * result[], int *size);
 
 
 #ifdef __cplusplus

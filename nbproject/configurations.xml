@@ -6,6 +6,7 @@
       <in>beacon_scan.c</in>
       <in>cJSON.c</in>
       <in>client.c</in>
+      <in>db.c</in>
       <in>server.c</in>
       <in>slog.c</in>
       <in>socket_send.c</in>
@@ -42,6 +43,8 @@
           <cTool>
             <incDir>
               <pElem>.</pElem>
+              <pElem>/usr/local/include/libbson-1.0</pElem>
+              <pElem>/usr/local/include/libmongoc-1.0</pElem>
             </incDir>
           </cTool>
         </makeTool>
@@ -52,11 +55,13 @@
       </makefileType>
       <item path="beacon_enroll.c" ex="false" tool="0" flavor2="2">
       </item>
-      <item path="beacon_scan.c" ex="false" tool="0" flavor2="0">
+      <item path="beacon_scan.c" ex="false" tool="0" flavor2="2">
       </item>
       <item path="cJSON.c" ex="false" tool="0" flavor2="2">
       </item>
       <item path="client.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="db.c" ex="false" tool="0" flavor2="2">
       </item>
       <item path="server.c" ex="false" tool="0" flavor2="3">
       </item>

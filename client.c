@@ -43,9 +43,28 @@ int main(int argc, char *argv[]) {
         cJSON_AddStringToObject(object, "TAGID", "0001");
         cJSON_AddStringToObject(object, "AT", "2020/07/19 21:04:44");
         cJSON_AddStringToObject(object, "USER", "user1");
-        cJSON_AddStringToObject(object, "PIN", "123456");
+        cJSON_AddStringToObject(object, "PIN", "111111");
         send_json_event(ID_ADD_WHITELIST, cJSON_PrintUnformatted(object));
 
+        cJSON_free(object);
+        object = cJSON_CreateObject();
+
+        cJSON_AddStringToObject(object, "ID", "1234");
+        cJSON_AddStringToObject(object, "TAGID", "0001");
+        cJSON_AddStringToObject(object, "AT", "2020/07/19 21:04:44");
+        cJSON_AddStringToObject(object, "USER", "user1");
+        cJSON_AddStringToObject(object, "PIN", "222222");
+        send_json_event(ID_ADD_WHITELIST, cJSON_PrintUnformatted(object));
+
+        cJSON_free(object);
+        object = cJSON_CreateObject();
+
+        cJSON_AddStringToObject(object, "ID", "1234");
+        cJSON_AddStringToObject(object, "TAGID", "0001");
+        cJSON_AddStringToObject(object, "AT", "2020/07/19 21:04:44");
+        cJSON_AddStringToObject(object, "USER", "user1");
+        cJSON_AddStringToObject(object, "PIN", "123456");
+        send_json_event(ID_ADD_WHITELIST, cJSON_PrintUnformatted(object));
         printf("ID %s sent\n", id);
 
     } else if (strcmp(id, "212") == 0) {
@@ -63,7 +82,7 @@ int main(int argc, char *argv[]) {
 
     } else if (strcmp(id, "216") == 0) {
         cJSON_AddStringToObject(object, "ID", "1234");
-        cJSON_AddStringToObject(object, "AT", "2020/07/19 21:04:44");
+        cJSON_AddStringToObject(object, "AT", "2020/07/19 19:04:44");
         cJSON_AddStringToObject(object, "START", "2020/07/19 21:04:44");
         cJSON_AddStringToObject(object, "END", "2020/07/19 22:04:44");
         cJSON_AddStringToObject(object, "PRI", "1");

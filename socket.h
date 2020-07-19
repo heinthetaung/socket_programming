@@ -18,14 +18,14 @@
 extern "C" {
 #endif
 
-#define SERVER_IP "192.168.2.204"
+//#define SERVER_IP "192.168.2.204"
     //#define SERVER_IP "192.168.1.134"
-    //    #define SERVER_IP  "0.0.0.0"
+        #define SERVER_IP  "0.0.0.0"
     //    #define SERVER_IP "10.0.105.10"
     //#define SERVER_IP  "10.0.0.37"
 
-#define SERVER_PORT 35002
-#define LISTENER_PORT 35002
+#define SERVER_PORT 36002
+#define LISTENER_PORT 36002
 
 #define ID_STARTUP 1
 #define ID_DOOR_OPEN 10
