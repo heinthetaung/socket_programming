@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-I. -lrt -pthread
 DEPS = cJSON.h socket.h
-SERVER_OBJ = server.o slog.o cJSON.o
+SERVER_OBJ = server.o slog.o cJSON.o socket_send.o
 CLIENT_OBJ = client.o slog.o socket_send.o cJSON.o
 BEACON_ENROLL_OBJ = beacon_enroll.o cJSON.o slog.o beacon_scan.o socket_send.o
 all: client server beacon_enroll

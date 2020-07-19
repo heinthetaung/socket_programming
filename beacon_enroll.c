@@ -15,60 +15,19 @@
 #include "socket.h"
 #define JSON_SIZE 10000000
 
-int socket_connected = 0;
-int connfd = 0;
-int listenfd = 0;
-int reinit_listen = 0;
-char sendBuff[1025];
-char *recvBuff;
-char *data;
 
 void signal_handler(int signal) {
     printf("intHanlder(): signal %d\n", signal);
-    //    socket_connected = 0;
-    //    shutdown(connfd, 2);
-    //    shutdown(listenfd, 2);
-    //    close(connfd);
-    //    close(listenfd);
-
-    if (signal == 13) {
-        //        reinit_listen = 1;
+    socket_signalHandler(signal);
+    if (signal == SIGQUIT) {
+        //quit_sig = 1;
+        printf("\n Got Quit Signal\n");
+    } else if ((signal == SIGINT) || (signal == SIGTERM)) {
+        //exit_sig = 1;
+        printf("\n Got Exit Signal\n");
+        exit(0);
     }
 
-    if (signal == 2) {
-        socket_connected = 0;
-        shutdown(connfd, 2);
-        shutdown(listenfd, 2);
-        close(connfd);
-        close(listenfd);
-        free(recvBuff);
-        exit(signal);
-    }
-
-}
-
-void socket_listen(void) {
-    int yes = 1; // For setsockopt() SO_REUSEADDR, below
-    struct sockaddr_in serv_addr;
-
-    listenfd = socket(AF_INET, SOCK_STREAM, 0);
-    memset(&serv_addr, '0', sizeof (serv_addr));
-    memset(sendBuff, '0', sizeof (sendBuff));
-
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    serv_addr.sin_port = htons(35001);
-
-    // Lose the pesky "address already in use" error message - ref: beej's guide
-    setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof (int));
-
-    bind(listenfd, (struct sockaddr*) &serv_addr, sizeof (serv_addr));
-    printf("listening on socket\n");
-    listen(listenfd, 10);
-
-    connfd = accept(listenfd, (struct sockaddr*) NULL, NULL);
-    socket_connected = 1;
-    printf("connection accepted\n");
 }
 
 void send_eventFromServer(char *tag_id, char cmd, char * image) {
@@ -92,7 +51,7 @@ void send_eventFromServer(char *tag_id, char cmd, char * image) {
     free(jsonString);
 }
 
-void * socket_server_task(void* arg) {
+void * beacon_socket_server_task(void* arg) {
     while (1) {
         if (reinit_listen == 1) {
             reinit_listen = 0;
@@ -127,7 +86,7 @@ int main(int argc, char *argv[]) {
     int data_length;
 
     pthread_t socket_server_thread_id;
-    pthread_create(&socket_server_thread_id, NULL, socket_server_task, NULL);
+    pthread_create(&socket_server_thread_id, NULL, beacon_socket_server_task, NULL);
 
     pthread_t beacon_det_thread_id;
     pthread_create(&beacon_det_thread_id, NULL, beacon_detect_task, NULL);

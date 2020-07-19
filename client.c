@@ -10,8 +10,7 @@
 #include <arpa/inet.h> 
 #include <signal.h>
 #include "socket.h"
-
-char recvBuff[1024];
+#include "cJSON.h"
 
 void signal_handler(int signal) {
     socket_signalHandler(signal);
@@ -23,41 +22,86 @@ void signal_handler(int signal) {
         printf("\n Got Exit Signal\n");
         exit(0);
     }
-
-    //pclose(fp);
 }
 
-void send_event(char *tag_id, char cmd, char * image) {
-    char data[512] = {0};
-    char event_time[512] = {0};
-    char jsonString[512] = {0};
-
-    get_formatted_time(event_time);
-    int json_len = snprintf(jsonString, sizeof (jsonString), "%s", build_json(tag_id, event_time, image));
-    int buff_len = prepare_data(data, cmd, jsonString, json_len);
-
-    socket_send_data(data, buff_len);
-}
-
-#define cmd_len 2
-#define cmd 254
 int main(int argc, char *argv[]) {
     signal(SIGINT, signal_handler);
     signal(SIGPIPE, signal_handler);
-    int n = 0;
-    int ret;
-    char data[7] = {0};
-    data[0] = (char) 0x01;
-    data[1] = 2;
-    data[2] = 0;
-    data[3] = 0;
-    data[4] = 0;
-    data[5] = cmd;
-    data[6] = 0;
-    int buff_len = 7;
 
-    
-    send_event("0001", ID_2FA_SUCCESS, NULL);
+    char id[10];
+    if (argc > 1 && argc < 3) {
+        sprintf(id, "%s", argv[1]);
+    } else {
+        printf("Too many or few arguments\n");
+        exit(EXIT_FAILURE);
+    }
+
+    cJSON *object = cJSON_CreateObject();
+    if (strcmp(id, "210") == 0) {
+
+        cJSON_AddStringToObject(object, "ID", "1234");
+        cJSON_AddStringToObject(object, "TAGID", "0001");
+        cJSON_AddStringToObject(object, "AT", "2020/07/19 21:04:44");
+        cJSON_AddStringToObject(object, "USER", "user1");
+        cJSON_AddStringToObject(object, "PIN", "123456");
+        send_json_event(ID_ADD_WHITELIST, cJSON_PrintUnformatted(object));
+
+        printf("ID %s sent\n", id);
+
+    } else if (strcmp(id, "212") == 0) {
+        cJSON_AddStringToObject(object, "ID", "1234");
+        cJSON_AddStringToObject(object, "AT", "2020/07/19 21:04:44");
+        send_json_event(ID_ADD_BLACKLIST, cJSON_PrintUnformatted(object));
+
+        printf("ID %s sent\n", id);
+
+    } else if (strcmp(id, "214") == 0) {
+        cJSON_AddStringToObject(object, "AT", "2020/07/19 21:04:44");
+        send_json_event(ID_ERASE_WHITELIST, cJSON_PrintUnformatted(object));
+
+        printf("ID %s sent\n", id);
+
+    } else if (strcmp(id, "216") == 0) {
+        cJSON_AddStringToObject(object, "ID", "1234");
+        cJSON_AddStringToObject(object, "AT", "2020/07/19 21:04:44");
+        cJSON_AddStringToObject(object, "START", "2020/07/19 21:04:44");
+        cJSON_AddStringToObject(object, "END", "2020/07/19 22:04:44");
+        cJSON_AddStringToObject(object, "PRI", "1");
+        cJSON_AddStringToObject(object, "MODE", "1");
+        send_json_event(ID_ADD_SCHEDULE, cJSON_PrintUnformatted(object));
+
+        printf("ID %s sent\n", id);
+
+    } else if (strcmp(id, "217") == 0) {
+        cJSON_AddStringToObject(object, "ID", "1234");
+        cJSON_AddStringToObject(object, "AT", "2020/07/19 21:04:44");
+        send_json_event(ID_REMOVE_SCHEDULE, cJSON_PrintUnformatted(object));
+
+        printf("ID %s sent\n", id);
+
+    } else if (strcmp(id, "218") == 0) {
+        cJSON_AddStringToObject(object, "FTP", "firmware1.zip");
+        send_json_event(ID_REMOVE_SCHEDULE, cJSON_PrintUnformatted(object));
+
+        printf("ID %s sent\n", id);
+
+    } else if (strcmp(id, "220") == 0) {
+        cJSON_AddStringToObject(object, "AT", "2020/07/19 21:04:44");
+        send_json_event(ID_REMOVE_SCHEDULE, cJSON_PrintUnformatted(object));
+
+        printf("ID %s sent\n", id);
+
+    } else {
+        printf("ID not found\n");
+    }
+
+    cJSON_free(object);
+    //    send_event("0001", ID_2FA_SUCCESS, NULL);
+    //    for(int i =0; i<4;i++) {
+    //        send_heartbeat_event(ID_HEART_BEAT);
+    //        send_event("0001")
+    //    }
+    //    send_heartbeat_event(ID_HEART_BEAT);
 
     return 0;
 

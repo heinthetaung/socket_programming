@@ -21,6 +21,7 @@
   <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
   <sourceRootList>
     <Elem>.</Elem>
+    <Elem>../2FA_Shared_Library</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
