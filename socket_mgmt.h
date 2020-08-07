@@ -19,15 +19,13 @@ extern "C" {
 #endif
 
 //#define SERVER_IP "192.168.2.204"
-//    #define SERVER_IP "192.168.1.143"
-//    #define SERVER_IP "192.168.0.204" //table
-//#define SERVER_IP "192.168.0.101" //rack
-        #define SERVER_IP  "0.0.0.0"
+    #define SERVER_IP "192.168.1.143"
+//        #define SERVER_IP  "0.0.0.0"
     //    #define SERVER_IP "10.0.105.10"
     //#define SERVER_IP  "10.0.0.37"
 
-#define SERVER_PORT 35001
-#define LISTENER_PORT 35001
+#define SERVER_PORT 35002
+#define LISTENER_PORT 36002
 
 #define ID_STARTUP 1
 #define ID_DOOR_OPEN 10

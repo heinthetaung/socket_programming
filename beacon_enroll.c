@@ -72,7 +72,6 @@ int main(int argc, char *argv[]) {
     signal(SIGINT, signal_handler);
     signal(SIGPIPE, signal_handler);
 
-    slog_init("socket_server", "slog.cfg", 1, 0);
     time_t ticks;
     socket_listen();
     recvBuff = (char*) malloc(JSON_SIZE * sizeof (char));

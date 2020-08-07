@@ -35,17 +35,15 @@ int main(int argc, char *argv[]) {
         printf("Too many or few arguments\n");
         exit(EXIT_FAILURE);
     }
-
-    send_json_event(ID_STARTUP, "{\"VER\":\"V1.0\"}");
     
     cJSON *object = cJSON_CreateObject();
     if (strcmp(id, "210") == 0) {
 
         cJSON_AddStringToObject(object, "ID", "1234");
         cJSON_AddStringToObject(object, "TAGID", "0001");
-        cJSON_AddStringToObject(object, "AT", "2020/07/19 21:04:44");
+        cJSON_AddStringToObject(object, "AT", "2020/08/07 17:14:15");
         cJSON_AddStringToObject(object, "USER", "user1");
-        cJSON_AddStringToObject(object, "PIN", "111111");
+        cJSON_AddStringToObject(object, "PIN", "123456");
         send_json_event(ID_ADD_WHITELIST, cJSON_PrintUnformatted(object));
 
 //        cJSON_free(object);
@@ -86,7 +84,7 @@ int main(int argc, char *argv[]) {
         cJSON_AddStringToObject(object, "ID", "1234");
         cJSON_AddStringToObject(object, "AT", "2020/07/19 19:04:44");
         cJSON_AddStringToObject(object, "START", "2020/07/19 21:04:44");
-        cJSON_AddStringToObject(object, "END", "2020/07/21 22:04:44");
+        cJSON_AddStringToObject(object, "END", "2020/07/21 10:04:44");
         cJSON_AddStringToObject(object, "PRI", "1");
         cJSON_AddStringToObject(object, "MODE", "1");
         send_json_event(ID_ADD_SCHEDULE, cJSON_PrintUnformatted(object));
@@ -100,17 +98,17 @@ int main(int argc, char *argv[]) {
 
         printf("ID %s sent\n", id);
 
-    } else if (strcmp(id, "218") == 0) {
-        cJSON_AddStringToObject(object, "FTP", "firmware1.zip");
-        send_json_event(ID_FIRMWARE_UPDATE, cJSON_PrintUnformatted(object));
-
-        printf("ID %s sent\n", id);
-
-    } else if (strcmp(id, "220") == 0) {
-        cJSON_AddStringToObject(object, "AT", "2020/07/19 21:04:44");
-        send_json_event(ID_RESTART_CONTROLLER, cJSON_PrintUnformatted(object));
-
-        printf("ID %s sent\n", id);
+//    } else if (strcmp(id, "218") == 0) {
+//        cJSON_AddStringToObject(object, "FTP", "firmware1.zip");
+//        send_json_event(ID_FIRMWARE_UPDATE, cJSON_PrintUnformatted(object));
+//
+//        printf("ID %s sent\n", id);
+//
+//    } else if (strcmp(id, "220") == 0) {
+//        cJSON_AddStringToObject(object, "AT", "2020/07/19 21:04:44");
+//        send_json_event(ID_RESTART_CONTROLLER, cJSON_PrintUnformatted(object));
+//
+//        printf("ID %s sent\n", id);
 
     } else {
         printf("ID not found\n");

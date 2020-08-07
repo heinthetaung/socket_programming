@@ -7,9 +7,12 @@
       <in>cJSON.c</in>
       <in>client.c</in>
       <in>db.c</in>
+      <in>mgmt_client.c</in>
       <in>server.c</in>
       <in>slog.c</in>
+      <in>socket_mgmt.h</in>
       <in>socket_send.c</in>
+      <in>socket_send_mgmt.c</in>
     </df>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -63,11 +66,17 @@
       </item>
       <item path="db.c" ex="false" tool="0" flavor2="2">
       </item>
+      <item path="mgmt_client.c" ex="false" tool="0" flavor2="0">
+      </item>
       <item path="server.c" ex="false" tool="0" flavor2="3">
       </item>
       <item path="slog.c" ex="false" tool="0" flavor2="2">
       </item>
+      <item path="socket_mgmt.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="socket_send.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="socket_send_mgmt.c" ex="false" tool="0" flavor2="0">
       </item>
     </conf>
   </confs>
