@@ -57,16 +57,17 @@ void socket_signalHandler(int signal) {
     }
 }
 
-void send_json_event(int cmd, char * input_string) {
+int send_json_event(int cmd, char * input_string) {
     char * data = malloc(sizeof (char) * JSON_SIZE);
     char * jsonString = malloc(sizeof (char) * JSON_SIZE);
 
     int json_len = snprintf(jsonString, sizeof (char) * JSON_SIZE, "%s", input_string);
     int buff_len = prepare_data(data, cmd, jsonString, json_len);
     //    printf("%s\n", jsonString);
-    socket_send_data(data, buff_len);
+    int ret = socket_send_data(data, buff_len);
     free(data);
     free(jsonString);
+    return ret;
 }
 
 void send_event(char *tag_id, char cmd, char * image, char * battery) {
@@ -173,7 +174,7 @@ void get_formatted_time(char * time_tmp) {
     }
 }
 
-void socket_connect(void) {
+int socket_connect(void) {
     int ret = 0;
     struct sockaddr_in serv_addr;
     if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -193,8 +194,10 @@ void socket_connect(void) {
 
     if (ret = connect(sockfd, (struct sockaddr *) &serv_addr, sizeof (serv_addr)) < 0) {
         printf("Error : Connect Failed, Error code: %d\n", ret);
-        exit(EXIT_FAILURE);
+//        exit(EXIT_FAILURE);
+        return -1;
     } else {
+        return 0;
         //        printf("Socket Connected\n");
     }
 
@@ -209,7 +212,7 @@ void send_heartbeat_event(char cmd) {
     socket_send_data(data, 7);
 }
 
-void socket_send_data(char * data, int buff_len) {
+int socket_send_data(char * data, int buff_len) {
     int ret = 0;
     pthread_mutex_lock(&socket_lock);
     socket_connect();
@@ -220,6 +223,7 @@ void socket_send_data(char * data, int buff_len) {
     close(sockfd);
     pthread_mutex_unlock(&socket_lock);
     sleep(1);
+    return ret;
 }
 
 void * socket_server_task(void* arg) {

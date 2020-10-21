@@ -73,15 +73,15 @@ extern "C" {
     extern char *recvBuff;
     extern char *data;
     extern char server_ip[32];
-    void send_json_event(int cmd, char * input_string);
+    int send_json_event(int cmd, char * input_string);
     void socket_signalHandler(int signal);
-    void socket_send_data(char * data, int buff_len);
+    int socket_send_data(char * data, int buff_len);
     void send_event(char *tag_id, char cmd, char * image, char * battery);
     int prepare_data(char * data, char cmd, char * jsonString, int json_len);
     char * build_beaconJSON(char * tag_id, char * bat_status);
     char * build_json(char * tag_id, char * event_time, char * image, char *battery);
     void get_formatted_time(char * time_tmp);
-    void socket_connect(void);
+    int socket_connect(void);
     void send_heartbeat_event(char cmd);
     void socket_sendDataFromServer(char * data, int buff_len);
     void * socket_server_task(void*);
