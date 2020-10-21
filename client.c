@@ -48,8 +48,11 @@ int main(int argc, char *argv[]) {
             new_ip_int[i] = atoi(token);
             token = strtok(NULL, ".");
         }
-        snprintf(server_ip, 32, "%d.%d.%d.%d", new_ip_int[0], new_ip_int[1], new_ip_int[2], new_ip_int[3] + n);
-//        printf("server_ip: %s\n", server_ip);
+        if (n != 0) {
+            snprintf(server_ip, 32, "%d.%d.%d.%d", new_ip_int[0], new_ip_int[1], new_ip_int[2], new_ip_int[3] + 1);
+        } else {
+            snprintf(server_ip, 32, "%d.%d.%d.%d", new_ip_int[0], new_ip_int[1], new_ip_int[2], new_ip_int[3]);
+        }
         cJSON *object = cJSON_CreateObject();
         if (strcmp(id, "210") == 0) {
 

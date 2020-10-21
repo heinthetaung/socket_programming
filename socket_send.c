@@ -222,7 +222,7 @@ int socket_send_data(char * data, int buff_len) {
     }
     close(sockfd);
     pthread_mutex_unlock(&socket_lock);
-    sleep(1);
+    usleep(100000);
     return ret;
 }
 
