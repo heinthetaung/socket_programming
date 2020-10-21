@@ -18,11 +18,11 @@
 extern "C" {
 #endif
 
-//#define SERVER_IP "192.168.2.204"
-//    #define SERVER_IP "192.168.1.143"
-//    #define SERVER_IP "192.168.0.204" //table
-//#define SERVER_IP "192.168.0.101" //rack
-        #define SERVER_IP  "0.0.0.0"
+    //#define SERVER_IP "192.168.2.204"
+    //    #define SERVER_IP "192.168.1.143"
+    //    #define SERVER_IP "192.168.0.204" //table
+    //#define SERVER_IP "192.168.0.101" //rack
+#define SERVER_IP  "0.0.0.0"
     //    #define SERVER_IP "10.0.105.10"
     //#define SERVER_IP  "10.0.0.37"
 
@@ -60,20 +60,20 @@ extern "C" {
 #define ID_REMOVE_SCHEDULE 217
 #define ID_FIRMWARE_UPDATE 218
 #define ID_RESTART_CONTROLLER 220
-    
+
 #define ID_TAG_ENROLL 222
 
 #define data_offset 5
 #define cmd_len 2
 
-extern int reinit_listen;
-extern int connfd;
-extern int listenfd;
-extern int socket_connected;
-extern char *recvBuff;
-extern char *data;
-
-void send_json_event(int cmd, char * input_string) ;
+    extern int reinit_listen;
+    extern int connfd;
+    extern int listenfd;
+    extern int socket_connected;
+    extern char *recvBuff;
+    extern char *data;
+    extern char server_ip[32];
+    void send_json_event(int cmd, char * input_string);
     void socket_signalHandler(int signal);
     void socket_send_data(char * data, int buff_len);
     void send_event(char *tag_id, char cmd, char * image, char * battery);
@@ -85,7 +85,7 @@ void send_json_event(int cmd, char * input_string) ;
     void send_heartbeat_event(char cmd);
     void socket_sendDataFromServer(char * data, int buff_len);
     void * socket_server_task(void*);
-void socket_listen(void) ;
+    void socket_listen(void);
 #ifdef __cplusplus
 }
 #endif

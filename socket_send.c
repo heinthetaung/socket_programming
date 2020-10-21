@@ -37,7 +37,7 @@ int listener_port = LISTENER_PORT;
 //for connecting to tcp socket
 int sockfd = 0;
 int reinit = 0;
-char server_ip[] = SERVER_IP;
+char server_ip[32] = SERVER_IP;
 int server_port = SERVER_PORT;
 //char recvBuff[1024];
 char sendBuff[1024];
