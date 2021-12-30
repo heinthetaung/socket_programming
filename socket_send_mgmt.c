@@ -259,7 +259,7 @@ void * socket_server_task(void* arg) {
         } else if (n == 0) {
             printf("n == 0\n");
         } else {
-            printf("Exit Failure\n");
+//            printf("Exit Failure\n");
             exit(EXIT_FAILURE);
         }
 

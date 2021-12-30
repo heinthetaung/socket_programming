@@ -24,18 +24,28 @@ void signal_handler(int signal) {
         exit(0);
     }
 }
-
+//./client 210 127.0.0.1 1
+//./client <d> <ip> <number_of_ip>
+//./client 210 127.0.0.1 1 master0001 9999 123456
 int main(int argc, char *argv[]) {
     signal(SIGINT, signal_handler);
     signal(SIGPIPE, signal_handler);
 
     int num_of_ip = 0;
 
+    char beacon_id[10];
+    char tag_id[10];
+    char pin[10];
+    
     char id[ 10];
-    if (argc > 1 && argc < 5) {
+    
+    if (argc > 1 && argc < 8) {
         sprintf(id, "%s", argv[1]);
         strcpy(server_ip, argv[2]);
         num_of_ip = atoi(argv[3]);
+        strcpy(beacon_id, argv[4]);
+        strcpy(tag_id, argv[5]);
+        strcpy(pin, argv[6]);
     } else {
         printf("Too many or few arguments\n");
         exit(EXIT_FAILURE);
@@ -56,32 +66,38 @@ int main(int argc, char *argv[]) {
         cJSON *object = cJSON_CreateObject();
         if (strcmp(id, "210") == 0) {
 
-            cJSON_AddStringToObject(object, "ID", "masterid001");
-            cJSON_AddStringToObject(object, "TAGID", "9999");
-            cJSON_AddStringToObject(object, "AT", "2020/08/18 17:36:15");
-            cJSON_AddStringToObject(object, "USER", "admin");
-            cJSON_AddStringToObject(object, "PIN", "123456");
-            send_json_event(ID_ADD_WHITELIST, cJSON_PrintUnformatted(object));
-
-            cJSON_free(object);
-            object = cJSON_CreateObject();
-
-            cJSON_AddStringToObject(object, "ID", "masterid002");
-            cJSON_AddStringToObject(object, "TAGID", "9998");
-            cJSON_AddStringToObject(object, "AT", "2020/08/18 17:36:15");
-            cJSON_AddStringToObject(object, "USER", "admin");
-            cJSON_AddStringToObject(object, "PIN", "567890");
-            send_json_event(ID_ADD_WHITELIST, cJSON_PrintUnformatted(object));
+            //            cJSON_AddStringToObject(object, "ID", "masterid001");
+            //            cJSON_AddStringToObject(object, "TAGID", "9999");
+            //            cJSON_AddStringToObject(object, "AT", "2020/08/18 17:36:15");
+            //            cJSON_AddStringToObject(object, "USER", "admin");
+            //            cJSON_AddStringToObject(object, "PIN", "123456");
+            //            send_json_event(ID_ADD_WHITELIST, cJSON_PrintUnformatted(object));
+            //
+            //            cJSON_free(object);
+            //            object = cJSON_CreateObject();
+            //
+            //            cJSON_AddStringToObject(object, "ID", "masterid002");
+            //            cJSON_AddStringToObject(object, "TAGID", "9998");
+            //            cJSON_AddStringToObject(object, "AT", "2020/08/18 17:36:15");
+            //            cJSON_AddStringToObject(object, "USER", "admin");
+            //            cJSON_AddStringToObject(object, "PIN", "567890");
+            //            send_json_event(ID_ADD_WHITELIST, cJSON_PrintUnformatted(object));
 
             //        cJSON_free(object);
             //        object = cJSON_CreateObject();
             //
-            //        cJSON_AddStringToObject(object, "ID", "1234");
-            //        cJSON_AddStringToObject(object, "TAGID", "0001");
-            //        cJSON_AddStringToObject(object, "AT", "2020/07/19 21:04:44");
-            //        cJSON_AddStringToObject(object, "USER", "user1");
-            //        cJSON_AddStringToObject(object, "PIN", "222222");
-            //        send_json_event(ID_ADD_WHITELIST, cJSON_PrintUnformatted(object));
+            cJSON_AddStringToObject(object, "ID", beacon_id);
+            cJSON_AddStringToObject(object, "TAGID", tag_id);
+            cJSON_AddStringToObject(object, "AT", "2020/10/23 18:24:45");
+            cJSON_AddStringToObject(object, "USER", "user2");
+            cJSON_AddStringToObject(object, "PIN", pin);
+            int ret = send_json_event(ID_ADD_WHITELIST, cJSON_PrintUnformatted(object));
+
+            if (ret > 0) {
+                printf("ID %s sent to %s successful\n", id, server_ip);
+            } else {
+                printf("ID %s sent to %s failed\n", id, server_ip);
+            }
             //
             //        cJSON_free(object);
             //        object = cJSON_CreateObject();
@@ -114,7 +130,9 @@ int main(int argc, char *argv[]) {
 
         } else if (strcmp(id, "update") == 0) {
             cJSON_AddStringToObject(object, "AT", "2020/07/19 21:04:44");
-            int ret = send_json_event(ID_FIRMWARE_UPDATE, "production_use.zip");
+            int ret = send_json_event(ID_FIRMWARE_UPDATE, "controller_pt_v1.6.zip");
+            //            int ret = send_json_event(ID_FIRMWARE_UPDATE, "production_use.zip");
+
 
             if (ret > 0) {
                 printf("ID %s sent to %s successful\n", id, server_ip);
